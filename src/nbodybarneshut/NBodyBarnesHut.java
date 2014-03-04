@@ -144,7 +144,7 @@ public class NBodyBarnesHut {
      * bodies 6. max starting velocity component of bodies
      */
     public static void main(String[] args) throws InterruptedException {
-        int n = 8;
+        int n = 10;
 //        int timeSteps = 150000;
         int timeSteps = 1;
         int procs = 1;
