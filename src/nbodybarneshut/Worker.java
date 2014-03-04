@@ -30,7 +30,9 @@ public class Worker implements Runnable {
     public void run() {
         try {
             for (int i = 0; i < timeSteps; i++) {
-//                System.out.println("Worker nr " + workerNr + " enters iteration " + i);
+                problem.populateTree(workerNr);
+//                System.out.println("Worker nr " + workerNr + " enters iteration " + i);                
+                barrier.await();
                 problem.calculateForces(workerNr);
 //                System.out.println("Worker nr " + workerNr + " done calculating forces. Waiting...");
                 barrier.await();
@@ -41,6 +43,7 @@ public class Worker implements Runnable {
                 if (workerNr == 0 && graphics != null) {
                     graphics.repaint();
                 }
+                problem.setQuadTreeFresh(false);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();

@@ -24,10 +24,17 @@ public class NBodyBarnesHut {
     int n;
     int timeSteps;
     int procs;
+    private final double maxDimension;
+    private final double aspectRatio;
     Point2D.Double[][] forceMatrix;
     private final Body[] bodies;
+    private QuadTree quadTree;
+    private boolean quadTreeFresh;
 
-    public NBodyBarnesHut(int n, int timeSteps, int procs, Body[] bodies) {
+    public NBodyBarnesHut(int n, int timeSteps, int procs, Body[] bodies, 
+            double maxDimension, double aspectRatio) {
+        this.maxDimension = maxDimension;
+        this.aspectRatio = aspectRatio;
         this.n = n;
         this.timeSteps = timeSteps;
         this.procs = procs;
@@ -39,7 +46,23 @@ public class NBodyBarnesHut {
             }
         }
     }
+    
+    void setQuadTreeFresh(boolean b) {
+        quadTreeFresh = b;
+    }    
 
+    void populateTree(int workerNr) {
+        if(!quadTreeFresh) {
+            quadTree = new QuadTree(0, maxDimension * aspectRatio, 0, maxDimension);
+            quadTreeFresh = true;
+        }
+        //each worker populates the tree with bodies from its stripes
+        for (int i = workerNr; i < n; i += procs) {
+            System.out.println("Body nr " + i + " will be inserted, id " + bodies[i]);
+            quadTree.insertBody(bodies[i]);
+        }
+    }
+    
     public void calculateForces(int workerNr) {
         double distance;
         double magnitude;
@@ -121,8 +144,9 @@ public class NBodyBarnesHut {
      * bodies 6. max starting velocity component of bodies
      */
     public static void main(String[] args) throws InterruptedException {
-        int n = 100;
-        int timeSteps = 150000;
+        int n = 8;
+//        int timeSteps = 150000;
+        int timeSteps = 1;
         int procs = 1;
         double minMass = 1E5;
         double maxMass = 1E8;
@@ -174,7 +198,8 @@ public class NBodyBarnesHut {
                     new Point2D.Double(velX, velY), mass);
         }
         //initialize object representing n-body problem
-        NBodyBarnesHut nBodyProblem = new NBodyBarnesHut(n, timeSteps, procs, bodies);
+        NBodyBarnesHut nBodyProblem = new NBodyBarnesHut(n, timeSteps, procs, bodies, 
+        maxDimension, aspectRatio);
         //show parameters
         System.out.println("n: " + n);
         System.out.println("ticks (at " + NBodyBarnesHut.timeStep + "): " + timeSteps);
