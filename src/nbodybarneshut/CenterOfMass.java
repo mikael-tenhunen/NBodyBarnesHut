@@ -5,15 +5,17 @@ import java.awt.geom.Point2D;
 /**
  *
  */
-public class Body {
+public class CenterOfMass {
     private Point2D.Double position;
-    private Point2D.Double velocity;
     private double mass;
 
-    public Body(Point2D.Double position, Point2D.Double velocity, double mass) {
+    public CenterOfMass() {
+        position = new Point2D.Double();
+        mass = 0;
+    }
+
+    public CenterOfMass(Point2D.Double position, double mass) {
         this.position = position;
-        this.velocity = velocity;
-//        this.force = new Point2D.Double(0, 0);
         this.mass = mass;
     }
 
@@ -25,19 +27,16 @@ public class Body {
         this.position = position;
     }
 
-    public Point2D.Double getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(Point2D.Double velocity) {
-        this.velocity = velocity;
-    }
-
     public double getMass() {
         return mass;
     }
 
     public void setMass(double mass) {
         this.mass = mass;
+    }
+    
+    public void setAsBody(Body body) {
+        position.setLocation(body.getPosition().getX(), body.getPosition().getY());
+        mass = body.getMass();
     }
 }
