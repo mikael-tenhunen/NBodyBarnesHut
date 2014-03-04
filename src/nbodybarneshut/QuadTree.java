@@ -19,8 +19,8 @@ public class QuadTree {
         this.maxX = maxX;
         this.minX = minY;
         this.maxY = maxY;
-        xMiddle = (maxX - minX) / 2;
-        yMiddle = (maxY - minY) / 2;
+        xMiddle = ((maxX - minX) / 2) + minX;
+        yMiddle = ((maxY - minY) / 2) + minY;
         NW = null;
         NE = null;
         SE = null;
