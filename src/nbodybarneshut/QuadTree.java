@@ -11,22 +11,24 @@ public class QuadTree {
     private QuadTree NW;
     private QuadTree NE;
     private QuadTree SW;
-    private final CenterOfMass centerOfMass;
+    private CenterOfMass centerOfMass;
     private Body body;
 
-    public QuadTree(double minX, double maxX, double minY, double maxY) {
+    public QuadTree(double minX, double maxX, double minY, double maxY, NBodyGraphics graphics) {
         this.minX = minX;
         this.maxX = maxX;
         this.minX = minY;
         this.maxY = maxY;
-        xMiddle = (maxX - minX) / 2;
-        yMiddle = (maxY - minY) / 2;
+        xMiddle = ((maxX - minX) / 2) + minX;
+        yMiddle = ((maxY - minY) / 2) + minY;
         NW = null;
         NE = null;
         SE = null;
         SW = null;
         centerOfMass = new CenterOfMass();
         body = null;
+        graphics.addLines(minX, maxX, minY, maxY);
+        graphics.repaint();
     }
 
     public QuadTree getNW() {
@@ -69,7 +71,7 @@ public class QuadTree {
      * insertBody is used when building the tree.
      * @param bodyToInsert
      */
-    public void insertBody(Body bodyToInsert) {
+    public void insertBody(Body bodyToInsert, NBodyGraphics graphics) {
         centerOfMass.update(bodyToInsert);
         if (centerOfMass.getNrOfBodies() == 1) {
             //base case
@@ -77,20 +79,20 @@ public class QuadTree {
             this.body = bodyToInsert;
         }
         else {
+            //propagate the new body
+            System.out.println("propagating body " + bodyToInsert);
+            propagateBody(bodyToInsert, graphics);
             //propagate the body that already was here first
             if (null != this.body) {
                 //this was a leaf node, but should not be anymore
                 System.out.println("kicking body " + this.body + " the fuck out");
-                propagateBody(this.body);
+                propagateBody(this.body, graphics);
                 this.body = null;
             }
-            //propagate the new body
-            System.out.println("propagating body " + bodyToInsert);
-            propagateBody(bodyToInsert);
         }
     }
 
-    private void propagateBody(Body body) {
+    private void propagateBody(Body body, NBodyGraphics graphics) {
             //check which quadrant to insert into
             double x = body.getPosition().getX();
             double y = body.getPosition().getY();
@@ -98,33 +100,33 @@ public class QuadTree {
                 //NW
                 System.out.println(body + " put in NW");
                 if (null == NW) {
-                    NW = new QuadTree(minX, xMiddle, minY, yMiddle);
+                    NW = new QuadTree(minX, xMiddle, minY, yMiddle, graphics);
                 }
-                NW.insertBody(body);
+                NW.insertBody(body, graphics);
             }
             else if (y <= yMiddle && x > xMiddle) {
                 //NE
                 System.out.println(body + " put in NE");
                 if (null == NE) {
-                    NE = new QuadTree(xMiddle, maxX, minY, yMiddle);
+                    NE = new QuadTree(xMiddle, maxX, minY, yMiddle, graphics);
                 }
-                NE.insertBody(body);                
+                NE.insertBody(body, graphics);                
             }
             else if (y > yMiddle && x > xMiddle) {
                 //SE
                 System.out.println(body + " put in SE");
                 if (null == SE) {
-                    SE = new QuadTree(xMiddle, maxX, yMiddle, maxY);
+                    SE = new QuadTree(xMiddle, maxX, yMiddle, maxY, graphics);
                 }
-                SE.insertBody(body);
+                SE.insertBody(body, graphics);
             }
             else if (y > yMiddle && x <= xMiddle) {
                 //SW
                 System.out.println(body + " put in SW");
                 if (null == SW) {
-                    SW = new QuadTree(minX, xMiddle, yMiddle, maxY);
+                    SW = new QuadTree(minX, xMiddle, yMiddle, maxY, graphics);
                 }
-                SW.insertBody(body);
+                SW.insertBody(body, graphics);
             }        
     }
 }

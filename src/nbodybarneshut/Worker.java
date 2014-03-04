@@ -30,7 +30,7 @@ public class Worker implements Runnable {
     public void run() {
         try {
             for (int i = 0; i < timeSteps; i++) {
-                problem.populateTree(workerNr);
+                problem.populateTree(workerNr, graphics);
 //                System.out.println("Worker nr " + workerNr + " enters iteration " + i);                
                 barrier.await();
                 problem.calculateForces(workerNr);

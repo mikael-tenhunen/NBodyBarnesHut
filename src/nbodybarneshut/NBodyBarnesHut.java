@@ -51,15 +51,15 @@ public class NBodyBarnesHut {
         quadTreeFresh = b;
     }    
 
-    void populateTree(int workerNr) {
+    void populateTree(int workerNr, NBodyGraphics graphics) {
         if(!quadTreeFresh) {
-            quadTree = new QuadTree(0, maxDimension * aspectRatio, 0, maxDimension);
+            quadTree = new QuadTree(0, maxDimension, 0, maxDimension, graphics);
             quadTreeFresh = true;
         }
         //each worker populates the tree with bodies from its stripes
         for (int i = workerNr; i < n; i += procs) {
             System.out.println("Body nr " + i + " will be inserted, id " + bodies[i]);
-            quadTree.insertBody(bodies[i]);
+            quadTree.insertBody(bodies[i], graphics);
         }
     }
     
@@ -144,7 +144,7 @@ public class NBodyBarnesHut {
      * bodies 6. max starting velocity component of bodies
      */
     public static void main(String[] args) throws InterruptedException {
-        int n = 10;
+        int n = 5;
 //        int timeSteps = 150000;
         int timeSteps = 1;
         int procs = 1;
@@ -153,7 +153,7 @@ public class NBodyBarnesHut {
         double maxStartVelComponent = 0.00;
         double maxDimension = 100000;
         //height is screen height for graphical interface
-        double height = 800;
+        double height = 600;
         double aspectRatio = 1;
         long startTime;
         long endTime;
@@ -216,6 +216,7 @@ public class NBodyBarnesHut {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             graphics.setBackground(Color.black);
             frame.add(graphics, BorderLayout.CENTER);
+            frame.setUndecorated(true);
             frame.setVisible(true);
             graphics.repaint();
         }

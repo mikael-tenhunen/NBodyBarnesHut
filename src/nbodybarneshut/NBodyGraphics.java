@@ -3,6 +3,8 @@ package nbodybarneshut;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 
 public class NBodyGraphics extends JPanel {
@@ -12,6 +14,7 @@ public class NBodyGraphics extends JPanel {
     double width;
     double height;
     double invertedMaxMass;
+    ArrayList<Line2D.Double> lines;
     
     public NBodyGraphics(NBodyBarnesHut problem, double maxDimension, double width, 
             double height, double maxMass) {
@@ -22,6 +25,7 @@ public class NBodyGraphics extends JPanel {
         this.height = height;
         invertedMaxMass = 1 / maxMass;
         bodies = problem.getBodies();
+        lines = new ArrayList();
     }
     
     public void paintComponent(Graphics gr) {
@@ -42,6 +46,10 @@ public class NBodyGraphics extends JPanel {
 //            System.out.println("x: " + body.getPosition().getX() + 
 //                    "\ny: " + body.getPosition().getY());
         }
+        g.setColor(Color.green);
+        for (int i = 0; i < lines.size(); i++) {
+            g.draw(lines.get(i));
+        }
     }  
     
     public int convertXCoord(double coord) {
@@ -55,4 +63,23 @@ public class NBodyGraphics extends JPanel {
     public int convertMass(double mass) {
         return (int) (mass * 10 * invertedMaxMass) + 1;
     }
+    
+    public void addLines(double minX, double maxX, double minY, double maxY) {
+        minX = convertDoubleXCoord(minX);
+        maxX = convertDoubleXCoord(maxX);
+        minY = convertDoubleYCoord(minY);
+        maxY = convertDoubleYCoord(maxY);
+        lines.add(new Line2D.Double(minX, minY, maxX, minY));
+        lines.add(new Line2D.Double(minX, minY, minX, maxY));
+        lines.add(new Line2D.Double(minX, maxY, maxX, maxY));
+        lines.add(new Line2D.Double(maxX, minY, maxX, maxY));
+    }
+    
+    public double convertDoubleXCoord(double coord) {
+        return ((coord / maxDimension) * width);
+    }
+    
+    public double convertDoubleYCoord(double coord) {
+        return ((coord / maxDimension) * height);
+    }    
 }
