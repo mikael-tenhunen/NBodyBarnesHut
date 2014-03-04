@@ -73,19 +73,19 @@ public class QuadTree {
         centerOfMass.update(bodyToInsert);
         if (centerOfMass.getNrOfBodies() == 1) {
             //base case
-            System.out.println("base case reached by body id " + bodyToInsert);
+//            System.out.println("base case reached by body id " + bodyToInsert);
             this.body = bodyToInsert;
         }
         else {
             //propagate the body that already was here first
             if (null != this.body) {
                 //this was a leaf node, but should not be anymore
-                System.out.println("kicking body " + this.body + " the fuck out");
+//                System.out.println("kicking body " + this.body + " the fuck out");
                 propagateBody(this.body);
                 this.body = null;
             }
             //propagate the new body
-            System.out.println("propagating body " + bodyToInsert);
+//            System.out.println("propagating body " + bodyToInsert);
             propagateBody(bodyToInsert);
         }
     }
@@ -96,7 +96,7 @@ public class QuadTree {
             double y = body.getPosition().getY();
             if (y <= yMiddle && x <= xMiddle) {
                 //NW
-                System.out.println(body + " put in NW");
+//                System.out.println(body + " put in NW");
                 if (null == NW) {
                     NW = new QuadTree(minX, xMiddle, minY, yMiddle);
                 }
@@ -104,7 +104,7 @@ public class QuadTree {
             }
             else if (y <= yMiddle && x > xMiddle) {
                 //NE
-                System.out.println(body + " put in NE");
+//                System.out.println(body + " put in NE");
                 if (null == NE) {
                     NE = new QuadTree(xMiddle, maxX, minY, yMiddle);
                 }
@@ -112,7 +112,7 @@ public class QuadTree {
             }
             else if (y > yMiddle && x > xMiddle) {
                 //SE
-                System.out.println(body + " put in SE");
+//                System.out.println(body + " put in SE");
                 if (null == SE) {
                     SE = new QuadTree(xMiddle, maxX, yMiddle, maxY);
                 }
@@ -120,7 +120,7 @@ public class QuadTree {
             }
             else if (y > yMiddle && x <= xMiddle) {
                 //SW
-                System.out.println(body + " put in SW");
+//                System.out.println(body + " put in SW");
                 if (null == SW) {
                     SW = new QuadTree(minX, xMiddle, yMiddle, maxY);
                 }

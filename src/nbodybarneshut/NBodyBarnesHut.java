@@ -58,7 +58,7 @@ public class NBodyBarnesHut {
         }
         //each worker populates the tree with bodies from its stripes
         for (int i = workerNr; i < n; i += procs) {
-            System.out.println("Body nr " + i + " will be inserted, id " + bodies[i]);
+//            System.out.println("Body nr " + i + " will be inserted, id " + bodies[i]);
             quadTree.insertBody(bodies[i]);
         }
     }
@@ -144,9 +144,9 @@ public class NBodyBarnesHut {
      * bodies 6. max starting velocity component of bodies
      */
     public static void main(String[] args) throws InterruptedException {
-        int n = 10;
-//        int timeSteps = 150000;
-        int timeSteps = 1;
+        int n = 100;
+        int timeSteps = 150000;
+//        int timeSteps = 1;
         int procs = 1;
         double minMass = 1E5;
         double maxMass = 1E8;

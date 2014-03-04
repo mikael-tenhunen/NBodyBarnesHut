@@ -37,13 +37,13 @@ public class Worker implements Runnable {
 //                System.out.println("Worker nr " + workerNr + " done calculating forces. Waiting...");
                 barrier.await();
 //                System.out.println("Worker nr " + workerNr + " will move bodies");
+                problem.setQuadTreeFresh(false);
                 problem.moveBodies(workerNr);
 //                System.out.println("Worker nr " + workerNr + " done moving bodies. Waiting...");
                 barrier.await();
                 if (workerNr == 0 && graphics != null) {
                     graphics.repaint();
                 }
-                problem.setQuadTreeFresh(false);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
