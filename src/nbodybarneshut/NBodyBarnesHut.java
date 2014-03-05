@@ -19,15 +19,16 @@ import javax.swing.JFrame;
 public class NBodyBarnesHut {
 
     public static final double G = 6.67384E-11;
-    public static final double softening = 3E8;    //to soften forces
-    public static final double timeStep = 5E2;
+    public static final double softening = 3E12;    //to soften forces
+//    public static final double timeStep = 5E2;
+    public static final double timeStep = 5E4;
     public final double threshold;
     int n;
     int timeSteps;
     int procs;
     private final double maxDimension;
     private final double aspectRatio;
-    Point2D.Double[][] forceMatrix;
+    Point2D.Double[] forces;
     private final Body[] bodies;
     private QuadTree quadTree;
     private boolean quadTreeFresh;
@@ -41,11 +42,9 @@ public class NBodyBarnesHut {
         this.timeSteps = timeSteps;
         this.procs = procs;
         this.bodies = bodies;
-        forceMatrix = new Point2D.Double[procs][n];
-        for (int i = 0; i < procs; i++) {
-            for (int j = 0; j < n; j++) {
-                forceMatrix[i][j] = new Point2D.Double(0, 0);
-            }
+        forces = new Point2D.Double[n];
+        for (int i = 0; i < n; i++) {
+            forces[i] = new Point2D.Double(0, 0);
         }
     }
     
@@ -70,33 +69,28 @@ public class NBodyBarnesHut {
         Point2D.Double force;
         for (int i = workerNr; i < n; i += procs) {
             leftBody = bodies[i];
-            force = forceMatrix[workerNr][i];
+            force = forces[i];
             quadTree.calculateForce(leftBody, threshold, force);
+//System.out.println("forces["+i+"]: " + forces[i]);
         }
     }
 
     void moveBodies(int workerNr) {
         Point2D.Double deltav = new Point2D.Double();
         Point2D.Double deltap = new Point2D.Double();
-        Point2D.Double force = new Point2D.Double();
         Point2D.Double velocity;
         Point2D.Double position;
         Body currBody;
         double timeStepByMass;
 
         for (int i = workerNr; i < n; i += procs) {
-            //combine forces
-            for (int k = 0; k < procs; k++) {
-                force.setLocation(force.getX() + forceMatrix[k][i].getX(),
-                        force.getY() + forceMatrix[k][i].getY());
-                forceMatrix[k][i].setLocation(0, 0);
-            }
             //move bodies
             currBody = bodies[i];
             //Strength reduction with timeStep/Mass
             timeStepByMass = timeStep / currBody.getMass();
-            deltav.setLocation(force.getX() * timeStepByMass,
-                    force.getY() * timeStepByMass);
+            deltav.setLocation(forces[i].getX() * timeStepByMass,
+                    forces[i].getY() * timeStepByMass);
+//System.out.println("DeltaV: " + deltav);            
             //Strength reduction "*0.5" instead of division by 2
             deltap.setLocation((currBody.getVelocity().getX() + deltav.getX() * 0.5) * timeStep,
                     (currBody.getVelocity().getY() + deltav.getY() * 0.5) * timeStep);
@@ -106,8 +100,6 @@ public class NBodyBarnesHut {
             position = currBody.getPosition();
             position.setLocation(position.getX() + deltap.getX(),
                     position.getY() + deltap.getY());
-            //Reset force
-            force.setLocation(0, 0);
         }
     }
 
@@ -121,16 +113,16 @@ public class NBodyBarnesHut {
      * bodies 6. max starting velocity component of bodies
      */
     public static void main(String[] args) throws InterruptedException {
-        int n = 10;
+        int n = 2;
         int timeSteps = 150000;
 //        int timeSteps = 1;
-        int procs = 1;
-        double minMass = 1E5;
-        double maxMass = 1E8;
+        int procs = 4;
+        double minMass = 1E4;
+        double maxMass = 1E6;
         double maxStartVelComponent = 0.00;
-        double maxDimension = 100000;
+        double maxDimension = 10000;
         double initAreaFactor = 0.2;
-        double threshold = 0.5;
+        double threshold = 0.001;
         //height is screen height for graphical interface
         double height = 800;
         double aspectRatio = 1;

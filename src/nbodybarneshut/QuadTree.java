@@ -141,41 +141,43 @@ public class QuadTree {
     }
     
     public void calculateForce(Body influencedBody, double threshold, Point2D.Double forceToUpdate) {
-        double nodeWidth  = maxX - minX;
-        Point2D.Double bodyPosition = influencedBody.getPosition();
-        double distance = centerOfMass.getPosition().distance(bodyPosition);
-        double quotient = nodeWidth / distance;
-//        System.out.println("Body: " + body);
-//        System.out.println("Body == influencedBody " + (influencedBody == body));
-        if (quotient < threshold || (body != influencedBody && null != body)) {
-            double directionX;
-            double directionY;
-            double magnitude;
-            double invertedDistance;
-            double forceX;
-            double forceY;
-            //calculate force                
-            distance = bodyPosition.distance(centerOfMass.getPosition());
-            magnitude = (NBodyBarnesHut.G * influencedBody.getMass() * 
-                    centerOfMass.getMass()) / (distance * distance + NBodyBarnesHut.softening);
-            directionX = centerOfMass.getPosition().getX() - influencedBody.getPosition().getX();
-            directionY = centerOfMass.getPosition().getY() - influencedBody.getPosition().getY();
-            //Strength reduction with inverted distance
-            invertedDistance = 1 / distance;
-            forceX = magnitude * directionX * invertedDistance;
-            forceY = magnitude * directionY * invertedDistance;
-            forceToUpdate.setLocation(forceToUpdate.getX() + forceX, forceToUpdate.getY() + forceY);
-        }
-        else {
-            //keep recursing
-            if (null != NW)
-                NW.calculateForce(influencedBody, threshold, forceToUpdate);
-            if (null != NE)
-                NE.calculateForce(influencedBody, threshold, forceToUpdate);
-            if (null != SE)
-                SE.calculateForce(influencedBody, threshold, forceToUpdate);
-            if (null != SW)
-                SW.calculateForce(influencedBody, threshold, forceToUpdate);
+        if (body != influencedBody) {
+            double nodeWidth  = maxX - minX;
+            Point2D.Double bodyPosition = influencedBody.getPosition();
+            double distance = centerOfMass.getPosition().distance(bodyPosition);
+//            System.out.println("distance: " + distance);        
+            double quotient = nodeWidth / distance;
+        //        System.out.println("Body: " + body);
+        //        System.out.println("Body == influencedBody " + (influencedBody == body));
+            if (quotient < threshold || null != body) {
+                double directionX;
+                double directionY;
+                double magnitude;
+                double invertedDistance;
+                double forceX;
+                double forceY;
+                //calculate force                            
+                magnitude = (NBodyBarnesHut.G * influencedBody.getMass() * 
+                        centerOfMass.getMass()) / (distance * distance + NBodyBarnesHut.softening);
+                directionX = centerOfMass.getPosition().getX() - influencedBody.getPosition().getX();
+                directionY = centerOfMass.getPosition().getY() - influencedBody.getPosition().getY();
+                //Strength reduction with inverted distance
+                invertedDistance = 1 / distance;
+                forceX = magnitude * directionX * invertedDistance;
+                forceY = magnitude * directionY * invertedDistance;
+                forceToUpdate.setLocation(forceToUpdate.getX() + forceX, forceToUpdate.getY() + forceY);
+            }
+            else {
+                //keep recursing
+                if (null != NW)
+                    NW.calculateForce(influencedBody, threshold, forceToUpdate);
+                if (null != NE)
+                    NE.calculateForce(influencedBody, threshold, forceToUpdate);
+                if (null != SE)
+                    SE.calculateForce(influencedBody, threshold, forceToUpdate);
+                if (null != SW)
+                    SW.calculateForce(influencedBody, threshold, forceToUpdate);
+            }
         }
     }
 }
