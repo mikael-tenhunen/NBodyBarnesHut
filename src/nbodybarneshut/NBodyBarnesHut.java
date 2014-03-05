@@ -18,9 +18,10 @@ import javax.swing.JFrame;
  */
 public class NBodyBarnesHut {
 
-    public final double G = 6.67384E-11;
-    public final double softening = 3E8;    //to soften forces
+    public static final double G = 6.67384E-11;
+    public static final double softening = 3E8;    //to soften forces
     public static final double timeStep = 5E2;
+    public final double threshold;
     int n;
     int timeSteps;
     int procs;
@@ -32,10 +33,11 @@ public class NBodyBarnesHut {
     private boolean quadTreeFresh;
 
     public NBodyBarnesHut(int n, int timeSteps, int procs, Body[] bodies, 
-            double maxDimension, double aspectRatio) {
+            double maxDimension, double aspectRatio, double threshold) {
         this.maxDimension = maxDimension;
         this.aspectRatio = aspectRatio;
         this.n = n;
+        this.threshold = threshold;
         this.timeSteps = timeSteps;
         this.procs = procs;
         this.bodies = bodies;
@@ -64,37 +66,12 @@ public class NBodyBarnesHut {
     }
     
     public void calculateForces(int workerNr) {
-        double distance;
-        double magnitude;
-        Point2D.Double direction;
-        double directionX, directionY, forceX, forceY;
         Body leftBody;
-        Body rightBody;
         Point2D.Double force;
-        double invertedDistance;
-        /*       
-         workerNr is an index for row in forceMatrix
-         i and j identify the pair of bodies being processed
-         i is index for column, left body
-         j is index for column, right body
-         */
         for (int i = workerNr; i < n; i += procs) {
-            for (int j = i + 1; j < n; j++) {
-                leftBody = bodies[i];
-                rightBody = bodies[j];
-                distance = leftBody.getPosition().distance(rightBody.getPosition());
-                magnitude = (G * leftBody.getMass() * rightBody.getMass()) / (distance * distance + softening);
-                directionX = rightBody.getPosition().getX() - leftBody.getPosition().getX();
-                directionY = rightBody.getPosition().getY() - leftBody.getPosition().getY();
-                //Strength reduction with inverted distance
-                invertedDistance = 1 / distance;
-                forceX = magnitude * directionX * invertedDistance;
-                forceY = magnitude * directionY * invertedDistance;
-                force = forceMatrix[workerNr][i];
-                force.setLocation(force.getX() + forceX, force.getY() + forceY);
-                force = forceMatrix[workerNr][j];
-                force.setLocation(force.getX() - forceX, force.getY() - forceY);
-            }
+            leftBody = bodies[i];
+            force = forceMatrix[workerNr][i];
+            quadTree.calculateForce(leftBody, threshold, force);
         }
     }
 
@@ -151,8 +128,9 @@ public class NBodyBarnesHut {
         double minMass = 1E5;
         double maxMass = 1E8;
         double maxStartVelComponent = 0.00;
-        double maxDimension = 100000;
-        double initAreaFactor = 0.20;
+        double maxDimension = 100000000;
+        double initAreaFactor = 0.1;
+        double threshold = 0.5;
         //height is screen height for graphical interface
         double height = 800;
         double aspectRatio = 1;
@@ -179,9 +157,12 @@ public class NBodyBarnesHut {
             maxStartVelComponent = (double) Integer.parseInt(args[5]);
         }
         if (args.length > 6) {
-            if (args[6].equals("no") || args[6].equals("n"))
-                graphicalInterface = false;
+            threshold = (double) Integer.parseInt(args[6]);
         }
+        if (args.length > 7) {
+            if (args[7].equals("no") || args[7].equals("n"))
+                graphicalInterface = false;
+        }        
         
         //initialize bodies
         Body[] bodies = new Body[n];
@@ -202,7 +183,7 @@ public class NBodyBarnesHut {
         }
         //initialize object representing n-body problem
         NBodyBarnesHut nBodyProblem = new NBodyBarnesHut(n, timeSteps, procs, bodies, 
-        maxDimension, aspectRatio);
+        maxDimension, aspectRatio, threshold);
         //show parameters
         System.out.println("n: " + n);
         System.out.println("ticks (at " + NBodyBarnesHut.timeStep + "): " + timeSteps);
