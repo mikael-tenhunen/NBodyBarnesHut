@@ -152,6 +152,7 @@ public class NBodyBarnesHut {
         double maxMass = 1E8;
         double maxStartVelComponent = 0.00;
         double maxDimension = 100000;
+        double initAreaFactor = 0.20;
         //height is screen height for graphical interface
         double height = 800;
         double aspectRatio = 1;
@@ -187,8 +188,10 @@ public class NBodyBarnesHut {
         double posX, posY, velX, velY, mass;
         Random random = new Random();
         for (int i = 0; i < n; i++) {
-            posX = random.nextDouble() * maxDimension * aspectRatio;
-            posY = random.nextDouble() * maxDimension;
+            posX = random.nextDouble() * maxDimension * aspectRatio * initAreaFactor
+                    + maxDimension * aspectRatio * 0.5;
+            posY = random.nextDouble() * maxDimension * initAreaFactor 
+                    + maxDimension * 0.5;
             velX = random.nextDouble() * maxStartVelComponent;
             velX -= maxStartVelComponent * 0.5;
             velY = random.nextDouble() * maxStartVelComponent;

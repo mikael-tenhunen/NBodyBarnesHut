@@ -94,7 +94,12 @@ public class QuadTree {
             //check which quadrant to insert into
             double x = body.getPosition().getX();
             double y = body.getPosition().getY();
-            if (y <= yMiddle && x <= xMiddle) {
+            
+            if ((y <= minY || y > maxY || x <= minX || x > maxX)) {
+                //body is outside of the root, ignore it this time step!
+                return;
+            }
+            else if (y <= yMiddle && x <= xMiddle) {
                 //NW
 //                System.out.println(body + " put in NW");
                 if (null == NW) {
@@ -125,6 +130,6 @@ public class QuadTree {
                     SW = new QuadTree(minX, xMiddle, yMiddle, maxY);
                 }
                 SW.insertBody(body);
-            }        
+            }
     }
 }
