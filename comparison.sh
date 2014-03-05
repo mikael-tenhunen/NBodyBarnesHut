@@ -6,12 +6,12 @@
 #if (($NPROC>8))
 #then NPROC=8
 #fi
-timesteps=22750
-far=0.9
+timesteps=800000
+far=1.5
 #timesteps=$1
 #far=$5
 NPROC=4
-graphics=no
+nographics=yes
 echo $NPROC
 nrtries=5
 cd ./dist
@@ -23,7 +23,7 @@ do
 	printf "Sequential execution: \n" >>../result.txt
 	for (( i=1; i<=nrtries; i++ ))
 	do
-		java -jar NBodyBarnesHut.jar $size $timesteps $far 1 $graphics | grep seconds >>../result.txt
+		java -jar NBodyBarnesHut.jar $size $timesteps $far 1 | grep seconds >>../result.txt
 	done			
 done		
 #for all possible number of processors
@@ -38,7 +38,7 @@ do
 		printf "Parallel execution: \n" >>../result.txt
 		for (( i=1; i<=nrtries; i++ ))
 		do
-			 java -jar NBodyBarnesHut.jar $size $timesteps $far $processors $graphics | grep seconds >> ../result.txt
+			 java -jar NBodyBarnesHut.jar $size $timesteps $far $processors | grep seconds >> ../result.txt
 		done
 	done
 done

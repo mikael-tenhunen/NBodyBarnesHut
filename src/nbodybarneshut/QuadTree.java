@@ -140,7 +140,7 @@ public class QuadTree {
         }
     }
     
-    public void calculateForce(Body influencedBody, double threshold, Point2D.Double forceToUpdate) {
+    public double calculateForce(Body influencedBody, double threshold, Point2D.Double forceToUpdate, double comparisons) {
         if (body != influencedBody) {
             double nodeWidth  = maxX - minX;
             Point2D.Double bodyPosition = influencedBody.getPosition();
@@ -150,6 +150,7 @@ public class QuadTree {
         //        System.out.println("Body: " + body);
         //        System.out.println("Body == influencedBody " + (influencedBody == body));
             if (quotient < threshold || null != body) {
+                comparisons++;
                 double directionX;
                 double directionY;
                 double magnitude;
@@ -170,14 +171,15 @@ public class QuadTree {
             else {
                 //keep recursing
                 if (null != NW)
-                    NW.calculateForce(influencedBody, threshold, forceToUpdate);
+                    comparisons += NW.calculateForce(influencedBody, threshold, forceToUpdate, 0.0);
                 if (null != NE)
-                    NE.calculateForce(influencedBody, threshold, forceToUpdate);
+                    comparisons += NE.calculateForce(influencedBody, threshold, forceToUpdate, 0.0);
                 if (null != SE)
-                    SE.calculateForce(influencedBody, threshold, forceToUpdate);
+                    comparisons += SE.calculateForce(influencedBody, threshold, forceToUpdate, 0.0);
                 if (null != SW)
-                    SW.calculateForce(influencedBody, threshold, forceToUpdate);
+                    comparisons += SW.calculateForce(influencedBody, threshold, forceToUpdate, 0.0);
             }
         }
+        return comparisons;
     }
 }

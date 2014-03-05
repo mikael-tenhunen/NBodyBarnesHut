@@ -20,7 +20,7 @@ public class NBodyBarnesHut {
 
     public static final double G = 6.67384E-11;
     public static final double softening = 3E8;    //to soften forces
-    public static final double timeStep = 5E2;
+    public static final double timeStep = 5E4;
     public final double threshold;
     int n;
     int timeSteps;
@@ -66,11 +66,14 @@ public class NBodyBarnesHut {
     public void calculateForces(int workerNr) {
         Body leftBody;
         Point2D.Double force;
+        double comparisons = 0; //to be able to tell percentage approximations
         for (int i = workerNr; i < n; i += procs) {
+            comparisons = 0.0;
             leftBody = bodies[i];
             force = forces[i];
-            quadTree.calculateForce(leftBody, threshold, force);
-//System.out.println("forces["+i+"]: " + forces[i]);
+            comparisons = quadTree.calculateForce(leftBody, threshold, force, comparisons);
+//            System.out.println("percentage comparisons: " + (1-(comparisons/120)));
+//            System.out.println("forces["+i+"]: " + forces[i]);
         }
     }
 
@@ -116,13 +119,13 @@ public class NBodyBarnesHut {
         int n = 120;
         int timeSteps = 150000;
 //        int timeSteps = 1;
-        int procs = 2;
+        int procs = 1;
         double minMass = 1E5;
         double maxMass = 1E8;
         double maxStartVelComponent = 0.00;
-        double maxDimension = 500000;
-        double initAreaFactor = 0.2;
-        double threshold = 0.9;
+        double maxDimension = 100000;
+        double initAreaFactor = 1;
+        double threshold = 1.5;
         //height is screen height for graphical interface
         double height = 800;
         double aspectRatio = 1;
@@ -153,9 +156,9 @@ public class NBodyBarnesHut {
         Random random = new Random();
         for (int i = 0; i < n; i++) {
             posX = (random.nextDouble() * maxDimension * aspectRatio * initAreaFactor)
-                    + (maxDimension * aspectRatio * 0.37);
+                    + (maxDimension - maxDimension * initAreaFactor) * 0.5;
             posY = (random.nextDouble() * maxDimension * initAreaFactor) 
-                    + (maxDimension * 0.37);
+                    + (maxDimension - maxDimension * initAreaFactor) * 0.5;
             velX = random.nextDouble() * maxStartVelComponent;
             velX -= maxStartVelComponent * 0.5;
             velY = random.nextDouble() * maxStartVelComponent;
@@ -171,6 +174,7 @@ public class NBodyBarnesHut {
         System.out.println("n: " + n);
         System.out.println("ticks (at " + NBodyBarnesHut.timeStep + "): " + timeSteps);
         System.out.println("workers: " + procs);
+        System.out.println("far: " + threshold);
         //initiate graphics
         NBodyGraphics graphics = null;
         if (graphicalInterface) {
