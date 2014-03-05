@@ -2,7 +2,6 @@ results
 ----------------------------------------------------------
  --------------Size: 120--------------
 Sequential execution: 
+Time: 12.505311117000002 seconds
  --------------Size: 180--------------
-Sequential execution: 
- --------------Size: 240--------------
 Sequential execution: 

@@ -109,8 +109,8 @@ public class NBodyBarnesHut {
 
     /**
      * @param args the command line arguments 1. number of bodies 2. number of
-     * time steps 3. number of threads 4. min mass of bodies 5. max mass of
-     * bodies 6. max starting velocity component of bodies
+     * time steps 3. threshold value for Barnes-Hut 4. number of threads 
+     * 5. whether graphics should be displayed
      */
     public static void main(String[] args) throws InterruptedException {
         int n = 120;
@@ -128,7 +128,7 @@ public class NBodyBarnesHut {
         double aspectRatio = 1;
         long startTime;
         long endTime;
-        boolean graphicalInterface = true;
+        boolean graphicalInterface = false;
         //read command-line arguments
         if (args.length > 0) {
             n = Integer.parseInt(args[0]);
@@ -137,23 +137,14 @@ public class NBodyBarnesHut {
             timeSteps = Integer.parseInt(args[1]);
         }
         if (args.length > 2) {
-            procs = Integer.parseInt(args[2]);
+            threshold = Double.parseDouble(args[2]);
         }
         if (args.length > 3) {
-            minMass = Double.parseDouble(args[3]);
+            procs = Integer.parseInt(args[3]);
         }
         if (args.length > 4) {
-            maxMass = Double.parseDouble(args[4]);
-        }
-        if (args.length > 5) {
-            maxStartVelComponent = Double.parseDouble(args[5]);
-        }
-        if (args.length > 6) {
-            threshold = Double.parseDouble(args[6]);
-        }
-        if (args.length > 7) {
-            if (args[7].equals("no") || args[7].equals("n"))
-                graphicalInterface = false;
+            if (args[4].equals("yes") || args[4].equals("y"))
+                graphicalInterface = true;
         }        
         
         //initialize bodies
