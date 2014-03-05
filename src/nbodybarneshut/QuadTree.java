@@ -103,7 +103,7 @@ public class QuadTree {
         double y = body.getPosition().getY();
 
         if ((y <= minY || y > maxY || x <= minX || x > maxX)) {
-            //body is outside of the root, ignore it this time step!
+            //body is outside of the node's area
             return;
         }
         else if (y <= yMiddle && x <= xMiddle) {

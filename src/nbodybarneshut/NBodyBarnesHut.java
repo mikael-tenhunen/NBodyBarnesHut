@@ -21,7 +21,7 @@ public class NBodyBarnesHut {
     public static final double G = 6.67384E-11;
     public static final double softening = 3E12;    //to soften forces
 //    public static final double timeStep = 5E2;
-    public static final double timeStep = 5E4;
+    public static final double timeStep = 5E5;
     public final double threshold;
     int n;
     int timeSteps;
@@ -100,6 +100,7 @@ public class NBodyBarnesHut {
             position = currBody.getPosition();
             position.setLocation(position.getX() + deltap.getX(),
                     position.getY() + deltap.getY());
+            forces[i].setLocation(0, 0);
         }
     }
 
@@ -113,7 +114,7 @@ public class NBodyBarnesHut {
      * bodies 6. max starting velocity component of bodies
      */
     public static void main(String[] args) throws InterruptedException {
-        int n = 2;
+        int n = 100;
         int timeSteps = 150000;
 //        int timeSteps = 1;
         int procs = 4;
@@ -122,7 +123,7 @@ public class NBodyBarnesHut {
         double maxStartVelComponent = 0.00;
         double maxDimension = 10000;
         double initAreaFactor = 0.2;
-        double threshold = 0.001;
+        double threshold = 0.9;
         //height is screen height for graphical interface
         double height = 800;
         double aspectRatio = 1;
