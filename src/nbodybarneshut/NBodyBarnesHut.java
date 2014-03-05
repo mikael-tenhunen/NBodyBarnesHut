@@ -19,9 +19,8 @@ import javax.swing.JFrame;
 public class NBodyBarnesHut {
 
     public static final double G = 6.67384E-11;
-    public static final double softening = 3E12;    //to soften forces
-//    public static final double timeStep = 5E2;
-    public static final double timeStep = 5E6;
+    public static final double softening = 3E8;    //to soften forces
+    public static final double timeStep = 5E2;
     public final double threshold;
     int n;
     int timeSteps;
@@ -117,11 +116,11 @@ public class NBodyBarnesHut {
         int n = 120;
         int timeSteps = 150000;
 //        int timeSteps = 1;
-        int procs = 4;
-        double minMass = 1E4;
-        double maxMass = 1E6;
+        int procs = 2;
+        double minMass = 1E5;
+        double maxMass = 1E8;
         double maxStartVelComponent = 0.00;
-        double maxDimension = 100000;
+        double maxDimension = 500000;
         double initAreaFactor = 0.2;
         double threshold = 0.9;
         //height is screen height for graphical interface
@@ -141,16 +140,16 @@ public class NBodyBarnesHut {
             procs = Integer.parseInt(args[2]);
         }
         if (args.length > 3) {
-            minMass = (double) Integer.parseInt(args[3]);
+            minMass = Double.parseDouble(args[3]);
         }
         if (args.length > 4) {
-            maxMass = (double) Integer.parseInt(args[4]);
+            maxMass = Double.parseDouble(args[4]);
         }
         if (args.length > 5) {
-            maxStartVelComponent = (double) Integer.parseInt(args[5]);
+            maxStartVelComponent = Double.parseDouble(args[5]);
         }
         if (args.length > 6) {
-            threshold = (double) Integer.parseInt(args[6]);
+            threshold = Double.parseDouble(args[6]);
         }
         if (args.length > 7) {
             if (args[7].equals("no") || args[7].equals("n"))
@@ -163,9 +162,9 @@ public class NBodyBarnesHut {
         Random random = new Random();
         for (int i = 0; i < n; i++) {
             posX = (random.nextDouble() * maxDimension * aspectRatio * initAreaFactor)
-                    + (maxDimension * aspectRatio * 0.5);
+                    + (maxDimension * aspectRatio * 0.37);
             posY = (random.nextDouble() * maxDimension * initAreaFactor) 
-                    + (maxDimension * 0.5);
+                    + (maxDimension * 0.37);
             velX = random.nextDouble() * maxStartVelComponent;
             velX -= maxStartVelComponent * 0.5;
             velY = random.nextDouble() * maxStartVelComponent;
