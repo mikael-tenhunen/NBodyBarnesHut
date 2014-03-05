@@ -121,15 +121,15 @@ public class NBodyBarnesHut {
      * bodies 6. max starting velocity component of bodies
      */
     public static void main(String[] args) throws InterruptedException {
-        int n = 100;
+        int n = 10;
         int timeSteps = 150000;
 //        int timeSteps = 1;
         int procs = 1;
         double minMass = 1E5;
         double maxMass = 1E8;
         double maxStartVelComponent = 0.00;
-        double maxDimension = 100000000;
-        double initAreaFactor = 0.1;
+        double maxDimension = 100000;
+        double initAreaFactor = 0.2;
         double threshold = 0.5;
         //height is screen height for graphical interface
         double height = 800;
@@ -169,10 +169,10 @@ public class NBodyBarnesHut {
         double posX, posY, velX, velY, mass;
         Random random = new Random();
         for (int i = 0; i < n; i++) {
-            posX = random.nextDouble() * maxDimension * aspectRatio * initAreaFactor
-                    + maxDimension * aspectRatio * 0.5;
-            posY = random.nextDouble() * maxDimension * initAreaFactor 
-                    + maxDimension * 0.5;
+            posX = (random.nextDouble() * maxDimension * aspectRatio * initAreaFactor)
+                    + (maxDimension * aspectRatio * 0.5);
+            posY = (random.nextDouble() * maxDimension * initAreaFactor) 
+                    + (maxDimension * 0.5);
             velX = random.nextDouble() * maxStartVelComponent;
             velX -= maxStartVelComponent * 0.5;
             velY = random.nextDouble() * maxStartVelComponent;
