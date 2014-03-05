@@ -21,7 +21,7 @@ public class NBodyBarnesHut {
     public static final double G = 6.67384E-11;
     public static final double softening = 3E12;    //to soften forces
 //    public static final double timeStep = 5E2;
-    public static final double timeStep = 5E5;
+    public static final double timeStep = 5E6;
     public final double threshold;
     int n;
     int timeSteps;
@@ -114,14 +114,14 @@ public class NBodyBarnesHut {
      * bodies 6. max starting velocity component of bodies
      */
     public static void main(String[] args) throws InterruptedException {
-        int n = 100;
+        int n = 120;
         int timeSteps = 150000;
 //        int timeSteps = 1;
         int procs = 4;
         double minMass = 1E4;
         double maxMass = 1E6;
         double maxStartVelComponent = 0.00;
-        double maxDimension = 10000;
+        double maxDimension = 100000;
         double initAreaFactor = 0.2;
         double threshold = 0.9;
         //height is screen height for graphical interface
