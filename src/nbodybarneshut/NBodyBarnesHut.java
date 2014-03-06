@@ -68,11 +68,10 @@ public class NBodyBarnesHut {
         Point2D.Double force;
         double comparisons = 0; //to be able to tell percentage approximations
         for (int i = workerNr; i < n; i += procs) {
-            comparisons = 0.0;
             leftBody = bodies[i];
             force = forces[i];
-            comparisons = quadTree.calculateForce(leftBody, threshold, force, comparisons);
-//            System.out.println("percentage comparisons: " + (1-(comparisons/120)));
+            comparisons = quadTree.calculateForce(leftBody, threshold, force);
+//            System.out.println("percentage comparisons: " + (1-(comparisons/n)));
 //            System.out.println("forces["+i+"]: " + forces[i]);
         }
     }
