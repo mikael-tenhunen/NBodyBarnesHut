@@ -6,7 +6,7 @@
 #if (($NPROC>8))
 #then NPROC=8
 #fi
-timesteps=800000
+timesteps=70000
 far=1.5
 #timesteps=$1
 #far=$5
