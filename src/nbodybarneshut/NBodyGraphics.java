@@ -37,10 +37,6 @@ public class NBodyGraphics extends JPanel {
             g.drawOval(convertXCoord(body.getPosition().getX()) - halfSize, 
                    convertYCoord(body.getPosition().getY()) - halfSize, 
                    size, size);
-//            System.out.println("x: " + convertXCoord(body.getPosition().getX()) + 
-//                    "\ny: " + convertYCoord(body.getPosition().getY()));
-//            System.out.println("x: " + body.getPosition().getX() + 
-//                    "\ny: " + body.getPosition().getY());
         }
     }  
     

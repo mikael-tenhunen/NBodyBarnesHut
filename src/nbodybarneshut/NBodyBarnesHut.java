@@ -58,21 +58,19 @@ public class NBodyBarnesHut {
         }
         //each worker populates the tree with bodies from its stripes
         for (int i = workerNr; i < n; i += procs) {
-//            System.out.println("Body nr " + i + " will be inserted, id " + bodies[i]);
             quadTree.insertBody(bodies[i]);
         }
     }
     
     public void calculateForces(int workerNr) {
-        Body leftBody;
+        Body body;
         Point2D.Double force;
         double comparisons = 0; //to be able to tell percentage approximations
         for (int i = workerNr; i < n; i += procs) {
-            leftBody = bodies[i];
+            body = bodies[i];
             force = forces[i];
-            comparisons = quadTree.calculateForce(leftBody, threshold, force);
+            comparisons = quadTree.calculateForce(body, threshold, force);
 //            System.out.println("percentage comparisons: " + (1-(comparisons/n)));
-//            System.out.println("forces["+i+"]: " + forces[i]);
         }
     }
 
@@ -90,8 +88,7 @@ public class NBodyBarnesHut {
             //Strength reduction with timeStep/Mass
             timeStepByMass = timeStep / currBody.getMass();
             deltav.setLocation(forces[i].getX() * timeStepByMass,
-                    forces[i].getY() * timeStepByMass);
-//System.out.println("DeltaV: " + deltav);            
+                    forces[i].getY() * timeStepByMass);    
             //Strength reduction "*0.5" instead of division by 2
             deltap.setLocation((currBody.getVelocity().getX() + deltav.getX() * 0.5) * timeStep,
                     (currBody.getVelocity().getY() + deltav.getY() * 0.5) * timeStep);
