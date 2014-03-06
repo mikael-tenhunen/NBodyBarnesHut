@@ -20,7 +20,7 @@ public class NBodyBarnesHut {
 
     public static final double G = 6.67384E-11;
     public static final double softening = 3E8;    //to soften forces
-    public static final double timeStep = 5E4;
+    public static final double timeStep = 5E2;
     public final double threshold;
     int n;
     int timeSteps;
